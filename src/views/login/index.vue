@@ -1,15 +1,62 @@
 <template>
-    <div>
-        登录
+    <div class="vh-100 bg-dark">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-5 col-md-7 col-sm-9 col-12 margin-auto pt-5">
+                    <div class="card mt-5 bg-dark border-0">
+                        <div class="card-header bg-dark border-0">
+                            <h3 class="text-light text-center mb-0">UNI-ADMIN</h3>
+                        </div>
+                        <div class="card-body">
+                            <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
+                                <el-form-item prop="username">
+                                    <el-input type="text" v-model="ruleForm.username" size="medium" placeholder="请输入用户名" autocomplete="off"></el-input>
+                                </el-form-item>
+                                <el-form-item prop="password">
+                                    <el-input type="password" v-model="ruleForm.password"size="medium"placeholder="请输入密码"  autocomplete="off"></el-input>
+                                </el-form-item>
+                                <el-form-item>
+                                    <el-button type="primary" class="w-100" size="medium" @click="submitForm()">立即登录</el-button>
+                                </el-form-item>
+                            </el-form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "index"
+    name: "index",
+    data(){
+        return {
+            ruleForm:{
+                username:'',
+                password:''
+            },
+            rules:{
+                username:[
+                    { required: true, message: '请输入用户名', trigger: 'blur' },
+                ],
+                password:[
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                ]
+            }
+        }
+    },
+    methods:{
+        submitForm() {
+            this.$refs.ruleForm.validate((valid)=>{
+                if(valid){
+                    this.$router.push({name:"index"})
+                }
+            })
+        }
+    }
 }
 </script>
 
 <style scoped>
-
 </style>
