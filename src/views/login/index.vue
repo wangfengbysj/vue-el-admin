@@ -5,7 +5,7 @@
                 <div class="col-lg-5 col-md-7 col-sm-9 col-12 margin-auto pt-5">
                     <div class="card mt-5 bg-dark border-0">
                         <div class="card-header bg-dark border-0">
-                            <h3 class="text-light text-center mb-0">UNI-ADMIN</h3>
+                            <h3 class="text-light text-center mb-0">{{this.$conf.logo}}</h3>
                         </div>
                         <div class="card-body">
                             <el-form :model="ruleForm" :rules="rules" ref="ruleForm">
