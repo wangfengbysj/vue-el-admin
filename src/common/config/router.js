@@ -18,6 +18,9 @@ const routes = [
                 // component: () => import('../../views/index/index.vue')
                 meta:{title:'后台首页'},
                 component: 'index/index'
+            },{
+                meta:{title:'相册管理'},
+                component: 'image/index'
             },
             {
                 // name:'shop_goods_list'
