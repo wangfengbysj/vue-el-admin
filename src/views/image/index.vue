@@ -43,6 +43,34 @@
         <el-container style="position: absolute;top: 60px;left: 200px;bottom: 60px;right: 0">
           <el-main>
             <!-- 主内容 -->
+            <el-row :gutter="10">
+              <el-col :span="24" :sm="8" :md="6" :lg="4" v-for="(item,i) in imageList" :key="i">
+                <el-card class="box-card mb-3 position-relative"
+                         :body-style="{'padding':'0'}"
+                         shadow="hover">
+                  <div class="border" :class="{'border-danger':item.isCheck}">
+
+                    <span class="badge badge-danger" style="position: absolute;top:0;right:0;" v-if="item.isCheck">1</span>
+
+                    <img :src="item.url"
+                         class="w-100"
+                         style="height: 130px"
+                         @click="choose(item)">
+                    <div class="w-100 text-white px-2"
+                         style="background: rgba(0,0,0,0.5);margin-top: -19px; position: absolute">
+                      <span class="small">{{ item.name }}</span>
+                    </div>
+                    <div class="p-2 text-center">
+                      <el-button-group>
+                        <el-button size="mini" icon="el-icon-view" @click="previewImage"></el-button>
+                        <el-button size="mini" icon="el-icon-edit" @click="imageEdit(item,index)"></el-button>
+                        <el-button size="mini" icon="el-icon-delete" @click="imageDel(index)"></el-button>
+                      </el-button-group>
+                    </div>
+                  </div>
+                </el-card>
+              </el-col>
+            </el-row>
           </el-main>
         </el-container>
 
@@ -52,8 +80,8 @@
 
     <!-- 修改对话框-->
     <el-dialog
-        title="修改相册"
-        :visible.sync="albumModel">
+        :title="albumTitle"
+        :visible.sync="albumModel" width="30%">
       <el-form ref="form" :model="albumForm" label-width="80px">
         <el-form-item label="相册名称">
           <el-input v-model="albumForm.name" size="medium" placeholder="请输入相册名称"></el-input>
@@ -66,6 +94,16 @@
         <el-button @click="albumModel = false">取 消</el-button>
         <el-button type="primary" @click="confirmAlbumModel()">确 定</el-button>
       </span>
+    </el-dialog>
+
+    <!--预览图片-->
+    <el-dialog
+        :visible.sync="previewModel"
+        width="60vw" top="5vw" style="padding:0">
+      <div style="margin:-60px -20px -30px -20px">
+        <img src="https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg"
+             class="w-100"/>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -83,16 +121,75 @@ export default {
         name: "",
         order: 0
       },
+      previewModel: false,
       albumEditIndex: -1,
       albumModel: false,
       albumIndex: 0,
-      albums: []
+      albums: [],
+      imageList: [
+        {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        }, {
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片",
+          isCheck: false
+        },
+      ]
     }
   },
   created() {
     this.__init()
   },
+  computed: {
+    albumTitle() {
+      return this.albumEditIndex > -1 ? "编辑相册" : "新建相册"
+    }
+  },
   methods: {
+
+    __init() {
+      for (var i = 0; i < 20; i++) {
+        this.albums.push({
+          name: "相册" + i,
+          num: Math.floor(Math.random() * 100),
+          order: 0
+        })
+      }
+    },
 
     // 点击确定修改/创建相册
     confirmAlbumModel() {
@@ -104,9 +201,9 @@ export default {
 
       // 追加albums
       this.albums.unshift({
-        name:this.albumForm.name,
-        order:this.albumForm.order,
-        num:0
+        name: this.albumForm.name,
+        order: this.albumForm.order,
+        num: 0
       })
       this.albumModel = false
     },
@@ -157,14 +254,49 @@ export default {
       this.albumIndex = index
     },
 
-    __init() {
-      for (var i = 0; i < 20; i++) {
-        this.albums.push({
-          name: "相册" + i,
-          num: Math.floor(Math.random() * 100),
-          order: 0
-        })
-      }
+    //预览图片
+    previewImage() {
+      this.previewModel = !this.previewModel
+    },
+
+    //编辑图片
+    imageEdit(item, index) {
+      this.$prompt('请输入新名称', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputValue: item.name,
+        inputValidator(val) {
+          if (val === '') {
+            return "图片名称不能为空"
+          }
+        }
+      }).then(({value}) => {
+        item.name = value
+        this.$message({
+          type: 'success',
+          message: '修改成功'
+        });
+      })
+    },
+
+    //删除图片
+    imageDel(index) {
+      this.$confirm('是否删除该图片?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.imageList.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      })
+    },
+
+    // 选择图片
+    choose(item){
+      item.isCheck = !item.isCheck
     }
   }
 }
@@ -183,12 +315,5 @@ export default {
   color: #333;
   text-align: center;
   line-height: 60px;
-}
-
-.el-main {
-  background-color: #E9EEF3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
 }
 </style>
