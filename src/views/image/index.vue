@@ -13,6 +13,8 @@
                     class="mr-2"></el-input>
           <el-button type="success" size="medium">搜索</el-button>
         </div>
+        <el-button type="warning" size="medium" @click="unChoose()" v-if="chooseList.length">取消删除</el-button>
+        <el-button type="danger" size="medium" @click="imageDel({all:true})" v-if="chooseList.length">批量删除</el-button>
         <el-button type="success" size="medium" @click="openAlbumModel(false)">创建相册</el-button>
         <el-button type="warning" size="medium">上传图片</el-button>
       </el-header>
@@ -50,7 +52,9 @@
                          shadow="hover">
                   <div class="border" :class="{'border-danger':item.isCheck}">
 
-                    <span class="badge badge-danger" style="position: absolute;top:0;right:0;" v-if="item.isCheck">1</span>
+                    <span class="badge badge-danger" style="position: absolute;top:0;right:0;" v-if="item.isCheck">
+                      {{ item.checkOrder }}
+                    </span>
 
                     <img :src="item.url"
                          class="w-100"
@@ -64,7 +68,7 @@
                       <el-button-group>
                         <el-button size="mini" icon="el-icon-view" @click="previewImage"></el-button>
                         <el-button size="mini" icon="el-icon-edit" @click="imageEdit(item,index)"></el-button>
-                        <el-button size="mini" icon="el-icon-delete" @click="imageDel(index)"></el-button>
+                        <el-button size="mini" icon="el-icon-delete" @click="imageDel({index})"></el-button>
                       </el-button-group>
                     </div>
                   </div>
@@ -75,7 +79,26 @@
         </el-container>
 
       </el-container>
-      <el-footer>Footer</el-footer>
+      <el-footer class="d-flex border-top align-items-center px-0">
+        <div style="width: 200px;flex-shrink: 0"
+             class="h-100 d-flex align-items-center border-right  justify-content-center">
+          <el-button-group>
+            <el-button size="mini" icon="el-icon-arrow-left">上一页</el-button>
+            <el-button size="mini">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+          </el-button-group>
+        </div>
+        <div style="flex:1" class="px-2">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage4"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400">
+          </el-pagination>
+        </div>
+      </el-footer>
     </el-container>
 
     <!-- 修改对话框-->
@@ -126,49 +149,9 @@ export default {
       albumModel: false,
       albumIndex: 0,
       albums: [],
-      imageList: [
-        {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        }, {
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片",
-          isCheck: false
-        },
-      ]
+      imageList: [],
+      chooseList: [],
+      currentPage: 1
     }
   },
   created() {
@@ -187,6 +170,16 @@ export default {
           name: "相册" + i,
           num: Math.floor(Math.random() * 100),
           order: 0
+        })
+      }
+
+      for (var i = 0; i < 30; i++) {
+        this.imageList.push({
+          id: i,
+          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+          name: "图片" + i,
+          isCheck: false,
+          checkOrder: 0
         })
       }
     },
@@ -280,13 +273,23 @@ export default {
     },
 
     //删除图片
-    imageDel(index) {
-      this.$confirm('是否删除该图片?', '提示', {
+    imageDel(obj) {
+      this.$confirm(obj.all ? "是否删除选中图片?" : '是否删除该图片?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.imageList.splice(index, 1)
+
+        if (obj.all) {
+          let list = this.imageList.filter(img => {
+            return !this.chooseList.some(v => v.id === img.id)
+          })
+          this.imageList = list
+          this.chooseList = []
+        } else {
+          this.imageList.splice(obj.index, 1)
+        }
+
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -294,9 +297,53 @@ export default {
       })
     },
 
-    // 选择图片
-    choose(item){
-      item.isCheck = !item.isCheck
+    //选中图片
+    choose(item) {
+      // 选中
+      if (!item.isCheck) {
+        // 加入选中
+        this.chooseList.push({id: item.id, url: item.url})
+        // 计算序号
+        item.checkOrder = this.chooseList.length
+        // 修改状态
+        item.isCheck = true
+        return
+      }
+      // 取消选中
+      // 找到在chooseList中的索引，
+      let i = this.chooseList.findIndex(v => v.id === item.id)
+      if (i === -1) return;
+      let length = this.chooseList.length;
+      if (i + 1 < length) {
+        for (let j = i; j < length; j++) {
+          let no = this.imageList.findIndex(v => v.id === this.chooseList[j].id)
+          if (no > -1) {
+            this.imageList[no].checkOrder--
+          }
+        }
+      }
+      this.chooseList.splice(i, 1)
+      item.isCheck = false
+      item.checkOrder = 0
+
+    },
+    // 取消选中
+    unChoose() {
+      this.imageList.forEach(img => {
+        let i = this.chooseList.findIndex(item => item.id === img.id)
+        if (i > -1) {
+          img.isCheck = false
+          img.checkOrder = 0
+          this.chooseList.splice(i, 1)
+        }
+      })
+    },
+
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+    },
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
     }
   }
 }
@@ -308,12 +355,5 @@ export default {
   color: #67C23A !important;
   background-color: #f0f9eb !important;
   border-color: #c2e7b0 !important;
-}
-
-.el-footer {
-  background-color: #B3C0D1;
-  color: #333;
-  text-align: center;
-  line-height: 60px;
 }
 </style>
