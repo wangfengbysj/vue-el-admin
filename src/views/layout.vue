@@ -101,11 +101,6 @@ export default {
             name: '商品',
             submenu: [
               {
-                icon: 'el-icon-s-order',
-                name: '商品列表',
-                pathname: 'shop_goods_list'
-              },
-              {
                 icon: 'el-icon-picture',
                 name: '商品分类'
               },
