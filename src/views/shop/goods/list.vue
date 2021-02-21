@@ -51,12 +51,13 @@
          总库存（200）
          价格(元)（1000.00）
          -->
-        <el-table border class="mt-3" :data="tableData[tabI].list" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table border class="mt-3" :data="tableData[tabI].list" style="width: 100%"
+                  @selection-change="handleSelectionChange">
           <el-table-column
               type="selection"
               width="55">
           </el-table-column>
-          <el-table-column label="商品" width="380">
+          <el-table-column label="商品" width="390">
             <template slot-scope="scope">
               <div class="media">
                 <img :src="scope.row.cover" class="mr-3" style="width: 60px;height:60px">
@@ -71,15 +72,34 @@
           <el-table-column prop="type" align="center" label="商品类型"></el-table-column>
           <el-table-column prop="sale_count" align="center" label="实际销量"></el-table-column>
           <el-table-column prop="order" align="center" label="商品排序"></el-table-column>
-          <el-table-column prop="status" align="center" label="商品状态">
+          <el-table-column prop="status" align="center" label="商品状态" width="120">
             <template slot-scope="scope">
-              <el-button type="success" size="mini" plain>上架</el-button>
+              <el-button type="success" size="mini" plain @click="scope.row.ischeck=1">审核通过</el-button>
+              <el-button type="danger" size="mini" plain @click="scope.row.ischeck=2" class="mt-2 ml-0">审核拒绝</el-button>
             </template>
           </el-table-column>
           <el-table-column prop="pprice" align="center" label="价格(元)"></el-table-column>
-          <el-table-column prop="id" align="center" label="操作"></el-table-column>
+          <el-table-column prop="id" align="center" label="操作">
+            <template slot-scope="scope">
+              <el-button-group>
+                <el-button type="primary" size="mini" plain>修改</el-button>
+                <el-button type="danger" size="mini" plain @click="deleteItem(scope.$index)">删除</el-button>
+              </el-button-group>
+            </template>
+          </el-table-column>
 
         </el-table>
+
+        <div style="height: 60px"></div>
+        <el-footer class="d-flex align-items-center border-top px-0 position-fixed bg-white" style="left: 200px;bottom:0;right: 0;z-index: 100">
+          <el-pagination
+              :current-page="tableData[tabIndex].currentPage"
+              :page-sizes="[100, 200, 300, 400]"
+              :page-size="100"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="400">
+          </el-pagination>
+        </el-footer>
 
       </el-tab-pane>
     </el-tabs>
@@ -109,7 +129,6 @@ export default {
         category: ''
       },
       superSearch: false,
-
       tableData: []
     }
   },
@@ -123,10 +142,10 @@ export default {
           currentPage: 1,
           list: []
         })
-        for (let j =0; j < 20; j++) {
+        for (let j = 0; j < 20; j++) {
           this.tableData[i].list.push({
             id: 1,
-            title: '荣耀 V10全网通 标配版 4GB+64GB 魅丽红',
+            title: '荣耀 V10全网通 标配版 4GB+64GB 魅丽红 ' + i + '-' + j,
             cover: 'http://static.yoshop.xany6.com/2018071718294208f086786.jpg',
             create_time: '2019-07-17 18:34:14',
             category: "手机",
@@ -165,6 +184,21 @@ export default {
         return console.log('简单搜索')
       }
       console.log('高级搜索')
+    },
+
+    // 删除当前商品
+    deleteItem(index) {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.tableData[this.tabIndex].list.splice(index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      })
     },
 
     handleSelectionChange(val) {
