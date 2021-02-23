@@ -41,7 +41,7 @@
           </el-menu>
         </el-aside>
         <!-- 主布局 -->
-        <el-main class="bg-light" style="padding-bottom: 60px;position: relative">
+        <el-main class="bg-white" style="padding-bottom: 60px;position: relative">
           <!-- 面包屑导航-->
           <div class="border-bottom mb-3 bg-white" style="padding: 20px; margin: -20px"
                v-if="bran.length > 0">

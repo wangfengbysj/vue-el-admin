@@ -7,7 +7,9 @@
         <button-search @search="searchEvent" ref="buttonSearch" placeholder="要搜索的商品名称">
 
           <template #left>
-            <el-button type="success">发布商品</el-button>
+            <router-link :to="{name:'shop_goods_create'}">
+              <el-button type="success">发布商品</el-button>
+            </router-link>
             <el-button type="danger">批量删除</el-button>
           </template>
 
@@ -79,7 +81,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="pprice" align="center" label="价格(元)"></el-table-column>
-          <el-table-column prop="id" align="center" label="操作">
+          <el-table-column prop="id" align="center" label="操作" width="150">
             <template slot-scope="scope">
               <el-button-group>
                 <el-button type="primary" size="mini" plain>修改</el-button>
@@ -91,7 +93,8 @@
         </el-table>
 
         <div style="height: 60px"></div>
-        <el-footer class="d-flex align-items-center border-top px-0 position-fixed bg-white" style="left: 200px;bottom:0;right: 0;z-index: 100">
+        <el-footer class="d-flex align-items-center border-top px-0 position-fixed bg-white"
+                   style="left: 200px;bottom:0;right: 0;z-index: 100">
           <el-pagination
               :current-page="tableData[tabIndex].currentPage"
               :page-sizes="[100, 200, 300, 400]"
