@@ -9,51 +9,52 @@
       <el-tab-pane label="基础设置">
         <el-form ref="form" label-width="80px">
           <el-form-item label="商品名称">
-            <el-input v-model="title" placeholder="请输入商品名称，不能超过60个字符" class="w-50"></el-input>
+            <el-input :value="title" @input="vModel('title', $event)" placeholder="请输入商品名称，不能超过60个字符"
+                      class="w-50"></el-input>
           </el-form-item>
 
           <el-form-item label="商品分类">
-            <el-cascader v-model="category" :options="options"></el-cascader>
+            <el-cascader :value="category" @input="vModel('category', $event)" :options="options"></el-cascader>
           </el-form-item>
 
           <el-form-item label="商品描述">
             <el-input type="textarea" placeholder="选填，商品卖点简述，例如：此款商品美观大方 性价比较高 不容错过"
-                      v-model="desc" class="w-50">
+                      :value="desc" @input="vModel('desc', $event)" class="w-50">
             </el-input>
           </el-form-item>
 
           <el-form-item label="商品单位">
-            <el-input v-model="unit" placeholder="请输入商品单位" class="w-50"></el-input>
+            <el-input :value="unit" @input="vModel('unit', $event)" placeholder="请输入商品单位" class="w-50"></el-input>
           </el-form-item>
 
           <el-form-item label="总库存">
-            <el-input type="number" v-model="stock" class="w-25">
+            <el-input type="number" :value="stock" @input="vModel('stock', $event)" class="w-25">
               <template slot="append">件</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="库存预警">
-            <el-input type="number" v-model="min_stock" class="w-25">
+            <el-input type="number" :value="min_stock" @input="vModel('min_stock', $event)" class="w-25">
               <template slot="append">件</template>
             </el-input>
           </el-form-item>
 
           <el-form-item label="库存显示">
-            <el-radio-group v-model="display_stock">
+            <el-radio-group :value="display_stock" @input="vModel('display_stock', $event)">
               <el-radio :label="1" border class="mr-0">是</el-radio>
               <el-radio :label="0" border>否</el-radio>
             </el-radio-group>
           </el-form-item>
 
           <el-form-item label="是否上架">
-            <el-radio-group v-model="status">
+            <el-radio-group :value="status" @input="vModel('status', $event)">
               <el-radio :label="1" border class="mr-0">放入仓库</el-radio>
               <el-radio :label="0" border>立即上架</el-radio>
             </el-radio-group>
           </el-form-item>
 
           <el-form-item label="运费模板">
-            <el-select v-model="express" placeholder="请选择运费模板">
+            <el-select :value="express" @input="vModel('express', $event)" placeholder="请选择运费模板">
               <el-option label="区域一" value="shanghai"></el-option>
               <el-option label="区域二" value="shanghai"></el-option>
             </el-select>
@@ -75,27 +76,27 @@
         <template v-if="skus_type===0">
           <el-form ref="form" label-width="80px">
             <el-form-item label="市场价格">
-              <el-input type="number" class="w-25"  v-model="stock">
+              <el-input type="number" class="w-25" :value="oprice" @input="vModel('oprice',$event)">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
             <el-form-item label="销售价格">
-              <el-input type="number" v-model="stock" class="w-25">
+              <el-input type="number" :value="pprice" @input="vModel('pprice',$event)" class="w-25">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
             <el-form-item label="成本价格">
-              <el-input type="number" v-model="stock" class="w-25">
+              <el-input type="number" :value="cprice" @input="vModel('cprice',$event)" class="w-25">
                 <template slot="append">元</template>
               </el-input>
             </el-form-item>
             <el-form-item label="商品重量">
-              <el-input type="number" v-model="stock" class="w-25">
+              <el-input type="number" :value="weight" @input="vModel('weight',$event)" class="w-25">
                 <template slot="append">公斤</template>
               </el-input>
             </el-form-item>
             <el-form-item label="商品体积">
-              <el-input type="number" v-model="stock" class="w-25">
+              <el-input type="number" :value="volume" @input="vModel('volume',$event)" class="w-25">
                 <template slot="append">立方米</template>
               </el-input>
             </el-form-item>
@@ -372,7 +373,13 @@ export default {
       min_stock: state => state.goods_create.min_stock,
       display_stock: state => state.goods_create.display_stock,
       status: state => state.goods_create.status,
-      express: state => state.goods_create.express
+      express: state => state.goods_create.express,
+
+      oprice: state => state.goods_create.oprice, //市场价格
+      pprice: state => state.goods_create.pprice,  //销售价格
+      cprice: state => state.goods_create.cprice,  //成本价格
+      weight: state => state.goods_create.weight,  //体重
+      volume: state => state.goods_create.volume,  //体积
     })
   },
   mounted() {
@@ -380,11 +387,11 @@ export default {
   },
   methods: {
     ...mapMutations(['vModelState']),
-    vModel(key,value){
-      this.vModelState({key,value})
+    vModel(key, value) {
+      this.vModelState({key, value})
     },
     handleClick(tab, event) {
-      console.log(this.tabIndex);
+      console.log('store.skus_type=', this.$store.state.goods_create.skus_type)
     }
   }
 }
