@@ -7,59 +7,7 @@
 
     <el-tabs v-model="tabIndex" @tab-click="handleClick">
       <el-tab-pane label="基础设置">
-        <el-form ref="form" label-width="80px">
-          <el-form-item label="商品名称">
-            <el-input :value="title" @input="vModel('title', $event)" placeholder="请输入商品名称，不能超过60个字符"
-                      class="w-50"></el-input>
-          </el-form-item>
-
-          <el-form-item label="商品分类">
-            <el-cascader :value="category" @input="vModel('category', $event)" :options="options"></el-cascader>
-          </el-form-item>
-
-          <el-form-item label="商品描述">
-            <el-input type="textarea" placeholder="选填，商品卖点简述，例如：此款商品美观大方 性价比较高 不容错过"
-                      :value="desc" @input="vModel('desc', $event)" class="w-50">
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="商品单位">
-            <el-input :value="unit" @input="vModel('unit', $event)" placeholder="请输入商品单位" class="w-50"></el-input>
-          </el-form-item>
-
-          <el-form-item label="总库存">
-            <el-input type="number" :value="stock" @input="vModel('stock', $event)" class="w-25">
-              <template slot="append">件</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="库存预警">
-            <el-input type="number" :value="min_stock" @input="vModel('min_stock', $event)" class="w-25">
-              <template slot="append">件</template>
-            </el-input>
-          </el-form-item>
-
-          <el-form-item label="库存显示">
-            <el-radio-group :value="display_stock" @input="vModel('display_stock', $event)">
-              <el-radio :label="1" border class="mr-0">是</el-radio>
-              <el-radio :label="0" border>否</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item label="是否上架">
-            <el-radio-group :value="status" @input="vModel('status', $event)">
-              <el-radio :label="1" border class="mr-0">放入仓库</el-radio>
-              <el-radio :label="0" border>立即上架</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item label="运费模板">
-            <el-select :value="express" @input="vModel('express', $event)" placeholder="请选择运费模板">
-              <el-option label="区域一" value="shanghai"></el-option>
-              <el-option label="区域二" value="shanghai"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
+        <base-create></base-create>
       </el-tab-pane>
 
       <el-tab-pane label="商品规格">
@@ -73,67 +21,29 @@
           </el-form-item>
         </el-form>
 
+        <!-- 单规格 -->
         <template v-if="skus_type===0">
-          <el-form ref="form" label-width="80px">
-            <el-form-item label="市场价格">
-              <el-input type="number" class="w-25" :value="oprice" @input="vModel('oprice',$event)">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="销售价格">
-              <el-input type="number" :value="pprice" @input="vModel('pprice',$event)" class="w-25">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="成本价格">
-              <el-input type="number" :value="cprice" @input="vModel('cprice',$event)" class="w-25">
-                <template slot="append">元</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="商品重量">
-              <el-input type="number" :value="weight" @input="vModel('weight',$event)" class="w-25">
-                <template slot="append">公斤</template>
-              </el-input>
-            </el-form-item>
-            <el-form-item label="商品体积">
-              <el-input type="number" :value="volume" @input="vModel('volume',$event)" class="w-25">
-                <template slot="append">立方米</template>
-              </el-input>
-            </el-form-item>
-          </el-form>
+          <single-attr></single-attr>
         </template>
 
+        <!-- 多规格 -->
         <template v-else>
+          <!-- 规格卡片 -->
           <el-form ref="form" label-width="80px">
             <el-form-item label="添加规格">
-              <div class="card" style="line-height: 1.0">
-                <div class="card-header d-flex align-items-center">
-                  规格项：
-                  <el-input placeholder="请输入内容" size="mini" style="width: 250px">
-                    <el-button slot="append" icon="el-icon-more"></el-button>
-                  </el-input>
 
-                  <el-radio-group size="medium" style="margin-bottom: -10px" class="ml-2">
-                    <el-radio label="无"></el-radio>
-                    <el-radio label="颜色"></el-radio>
-                    <el-radio label="图片"></el-radio>
-                  </el-radio-group>
+              <sku-card v-for="(item,index) in sku_card"
+                        :key="index"
+                        :item="item"
+                        :index="index"
+                        :total="skuCardTotal"></sku-card>
 
-                  <el-button class="ml-auto" size="mini" icon="el-icon-top"></el-button>
-                  <el-button size="mini" icon="el-icon-bottom"></el-button>
-                  <el-button size="mini">删除</el-button>
-                </div>
-                <div class="card-body">
-                  <div>
-                    <el-button type="text" icon="el-icon-plus" size="mini">增加规格值</el-button>
-                  </div>
-                </div>
-              </div>
-
-              <el-button type="success" size="mini">增加规格</el-button>
+              <el-button type="success" size="mini" @click="addSkuCard">添加规格</el-button>
 
             </el-form-item>
+          </el-form>
 
+          <el-form ref="form" label-width="80px">
             <el-form-item label="批量设置">
               <el-button type="text" size="mini">销售价</el-button>
               <el-button type="text" size="mini">市场价</el-button>
@@ -159,234 +69,33 @@
 
 <script>
 import {mapState, mapMutations} from 'vuex'
+import BaseCreate from "@/components/shop/create/base-create";
+import SingleAttr from "@/components/shop/create/single-attrs";
+import SkuCard from "@/components/shop/create/sku/sku-card";
 
 export default {
   name: "create",
+  components: {SkuCard, SingleAttr, BaseCreate},
   data() {
     return {
       tabIndex: 0,
-      options: [{
-        value: 'zhinan',
-        label: '指南',
-        children: [{
-          value: 'shejiyuanze',
-          label: '设计原则',
-          children: [{
-            value: 'yizhi',
-            label: '一致'
-          }, {
-            value: 'fankui',
-            label: '反馈'
-          }, {
-            value: 'xiaolv',
-            label: '效率'
-          }, {
-            value: 'kekong',
-            label: '可控'
-          }]
-        }, {
-          value: 'daohang',
-          label: '导航',
-          children: [{
-            value: 'cexiangdaohang',
-            label: '侧向导航'
-          }, {
-            value: 'dingbudaohang',
-            label: '顶部导航'
-          }]
-        }]
-      }, {
-        value: 'zujian',
-        label: '组件',
-        children: [{
-          value: 'basic',
-          label: 'Basic',
-          children: [{
-            value: 'layout',
-            label: 'Layout 布局'
-          }, {
-            value: 'color',
-            label: 'Color 色彩'
-          }, {
-            value: 'typography',
-            label: 'Typography 字体'
-          }, {
-            value: 'icon',
-            label: 'Icon 图标'
-          }, {
-            value: 'button',
-            label: 'Button 按钮'
-          }]
-        }, {
-          value: 'form',
-          label: 'Form',
-          children: [{
-            value: 'radio',
-            label: 'Radio 单选框'
-          }, {
-            value: 'checkbox',
-            label: 'Checkbox 多选框'
-          }, {
-            value: 'input',
-            label: 'Input 输入框'
-          }, {
-            value: 'input-number',
-            label: 'InputNumber 计数器'
-          }, {
-            value: 'select',
-            label: 'Select 选择器'
-          }, {
-            value: 'cascader',
-            label: 'Cascader 级联选择器'
-          }, {
-            value: 'switch',
-            label: 'Switch 开关'
-          }, {
-            value: 'slider',
-            label: 'Slider 滑块'
-          }, {
-            value: 'time-picker',
-            label: 'TimePicker 时间选择器'
-          }, {
-            value: 'date-picker',
-            label: 'DatePicker 日期选择器'
-          }, {
-            value: 'datetime-picker',
-            label: 'DateTimePicker 日期时间选择器'
-          }, {
-            value: 'upload',
-            label: 'Upload 上传'
-          }, {
-            value: 'rate',
-            label: 'Rate 评分'
-          }, {
-            value: 'form',
-            label: 'Form 表单'
-          }]
-        }, {
-          value: 'data',
-          label: 'Data',
-          children: [{
-            value: 'table',
-            label: 'Table 表格'
-          }, {
-            value: 'tag',
-            label: 'Tag 标签'
-          }, {
-            value: 'progress',
-            label: 'Progress 进度条'
-          }, {
-            value: 'tree',
-            label: 'Tree 树形控件'
-          }, {
-            value: 'pagination',
-            label: 'Pagination 分页'
-          }, {
-            value: 'badge',
-            label: 'Badge 标记'
-          }]
-        }, {
-          value: 'notice',
-          label: 'Notice',
-          children: [{
-            value: 'alert',
-            label: 'Alert 警告'
-          }, {
-            value: 'loading',
-            label: 'Loading 加载'
-          }, {
-            value: 'message',
-            label: 'Message 消息提示'
-          }, {
-            value: 'message-box',
-            label: 'MessageBox 弹框'
-          }, {
-            value: 'notification',
-            label: 'Notification 通知'
-          }]
-        }, {
-          value: 'navigation',
-          label: 'Navigation',
-          children: [{
-            value: 'menu',
-            label: 'NavMenu 导航菜单'
-          }, {
-            value: 'tabs',
-            label: 'Tabs 标签页'
-          }, {
-            value: 'breadcrumb',
-            label: 'Breadcrumb 面包屑'
-          }, {
-            value: 'dropdown',
-            label: 'Dropdown 下拉菜单'
-          }, {
-            value: 'steps',
-            label: 'Steps 步骤条'
-          }]
-        }, {
-          value: 'others',
-          label: 'Others',
-          children: [{
-            value: 'dialog',
-            label: 'Dialog 对话框'
-          }, {
-            value: 'tooltip',
-            label: 'Tooltip 文字提示'
-          }, {
-            value: 'popover',
-            label: 'Popover 弹出框'
-          }, {
-            value: 'card',
-            label: 'Card 卡片'
-          }, {
-            value: 'carousel',
-            label: 'Carousel 走马灯'
-          }, {
-            value: 'collapse',
-            label: 'Collapse 折叠面板'
-          }]
-        }]
-      }, {
-        value: 'ziyuan',
-        label: '资源',
-        children: [{
-          value: 'axure',
-          label: 'Axure Components'
-        }, {
-          value: 'sketch',
-          label: 'Sketch Templates'
-        }, {
-          value: 'jiaohu',
-          label: '组件交互文档'
-        }]
-      }]
     }
   },
   computed: {
     ...mapState({
       skus_type: state => state.goods_create.skus_type,
-      title: state => state.goods_create.title,
-      category: state => state.goods_create.category,
-      desc: state => state.goods_create.desc,
-      unit: state => state.goods_create.unit,
-      stock: state => state.goods_create.stock,
-      min_stock: state => state.goods_create.min_stock,
-      display_stock: state => state.goods_create.display_stock,
-      status: state => state.goods_create.status,
-      express: state => state.goods_create.express,
+      sku_card: state => state.goods_create.sku_card
+    }),
 
-      oprice: state => state.goods_create.oprice, //市场价格
-      pprice: state => state.goods_create.pprice,  //销售价格
-      cprice: state => state.goods_create.cprice,  //成本价格
-      weight: state => state.goods_create.weight,  //体重
-      volume: state => state.goods_create.volume,  //体积
-    })
+    skuCardTotal() {
+      return this.sku_card.length
+    }
   },
   mounted() {
     console.log(`state skus_type = ${this.skus_type}`)
   },
   methods: {
-    ...mapMutations(['vModelState']),
+    ...mapMutations(['vModelState','addSkuCard']),
     vModel(key, value) {
       this.vModelState({key, value})
     },

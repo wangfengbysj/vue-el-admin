@@ -1,3 +1,4 @@
+import $Util from '@/common/util.js'
 export default {
     state: {
         skus_type: 0,
@@ -44,6 +45,45 @@ export default {
         // 修改state
         vModelState(state, {key, value}) {
             state[key] = value
+        },
+
+        // 修改规格卡片
+        vModelSkuCard(state, {key,index,value}){
+            state.sku_card[index][key] = value
+        },
+
+        //添加规格卡片
+        addSkuCard(state){
+            state.sku_card.push({
+                name:'规格名称',
+                type: 0,
+                list:[]
+            })
+        },
+
+        //删除规格卡片
+        delSkuCard(state,index) {
+            state.sku_card.splice(index, 1)
+        },
+
+        //规格卡片排序
+        sortSkuCard(state, {action, index}){
+
+            $Util[action](state.sku_card, index)
+        },
+
+        //增加指定规格卡片的规格属性
+        addSkuValue(state, index){
+            state.sku_card[index].list.push({
+                name:'规格名称',
+                color:'',
+                image:''
+            })
+        },
+
+        //删除指定规格卡片的规格属性
+        delSkuValue(state, {cardIndex, valueIndex}){
+            state.sku_card[cardIndex].list.splice(valueIndex,1)
         }
     },
     actions: {}
