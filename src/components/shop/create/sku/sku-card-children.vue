@@ -10,8 +10,13 @@
       </span>
     </div>
 
-    <input type="text" :value="item.name" class="form-control text-center" style="width: 80px;font-size: 15px">
+    <input type="text"
+           :value="item.name"
+           @input="inputChange"
+           class="form-control text-center"
+           style="width: 80px;font-size: 15px">
 
+    <!-- 删除 -->
     <span class="btn btn-light p-0 position-absolute"
           style="line-height: 1.0;right:-5px;top:-5px"
     @click="delSkuValue({cardIndex:cardIndex, valueIndex:index})">
@@ -35,7 +40,18 @@ export default {
     cardIndex: Number
   },
   methods:{
-    ...mapMutations(['delSkuValue'])
+    ...mapMutations(['delSkuValue','updateSkuValue']),
+    inputChange(e){
+      this.vModel('name',e.target.value)
+    },
+    vModel(key,value){
+      this.updateSkuValue({
+        cardIndex: this.cardIndex,
+        valueIndex: this.index,
+        key,
+        value
+      })
+    }
   },
   data() {
     return {}

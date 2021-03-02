@@ -8,6 +8,13 @@
     <el-tabs v-model="tabIndex" @tab-click="handleClick">
       <el-tab-pane label="基础设置">
         <base-create></base-create>
+<!--        <div style="width: 1000px">-->
+<!--          <div-->
+<!--              class="border p-3 h2"-->
+<!--              v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"-->
+<!--              :key="color.text"-->
+<!--          >{{color.text}}</div>-->
+<!--        </div>-->
       </el-tab-pane>
 
       <el-tab-pane label="商品规格">
@@ -79,6 +86,25 @@ export default {
   data() {
     return {
       tabIndex: 0,
+      // colors: [{
+      //   text: "Aquamarine"
+      // }, {
+      //   text: "Hotpink"
+      // }, {
+      //   text: "Gold"
+      // }, {
+      //   text: "Crimson"
+      // }, {
+      //   text: "Blueviolet"
+      // }, {
+      //   text: "Lightblue"
+      // }, {
+      //   text: "Cornflowerblue"
+      // }, {
+      //   text: "Skyblue"
+      // }, {
+      //   text: "Burlywood"
+      // }]
     }
   },
   computed: {
@@ -93,6 +119,17 @@ export default {
   },
   mounted() {
     console.log(`state skus_type = ${this.skus_type}`)
+    // this.$dragging.$on('dragged', ({ value }) => {
+    //   console.log(value.item)
+    //   console.log(value.list)
+    //   console.log(value.otherData)
+    // })
+    // this.$dragging.$on('dragend', (e) => {
+    //   console.log(JSON.stringify(e))
+    //   console.log(this.colors[0].text);
+    //   console.log('拖拽结束');
+    //
+    // })
   },
   methods: {
     ...mapMutations(['vModelState','addSkuCard']),

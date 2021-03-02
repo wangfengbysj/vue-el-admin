@@ -32,7 +32,8 @@
                            :key="index2"
                            :item="item2"
                            :index="index2"
-                           :cardIndex="index"></sku-card-children>
+                           :cardIndex="index"
+                           v-dragging="{ item: item2, list: item.list, group: `skuItem${index}` }"></sku-card-children>
 
       </div>
       <!-- 增加规格属性 -->
@@ -51,15 +52,27 @@ export default {
   name: "sku-card",
   components: {SkuCardChildren},
   data() {
-    return {}
+    return {
+      list: this.item.list
+    }
   },
   props: {
     item: Object,
     index: Number,
     total: Number
   },
+  mounted() {
+    this.$dragging.$on('dragend', (e) => {
+      if (e.group === 'skuItem'+this.index){
+        this.sortSkuValue({
+          index: this.index,
+          value: this.list
+        })
+      }
+    })
+  },
   methods: {
-    ...mapMutations(['vModelSkuCard', 'delSkuCard', 'sortSkuCard', 'addSkuValue']),
+    ...mapMutations(['vModelSkuCard', 'delSkuCard', 'sortSkuCard', 'addSkuValue','sortSkuValue']),
     vModel(key, index, value) {
       this.vModelSkuCard({key, index, value})
     },

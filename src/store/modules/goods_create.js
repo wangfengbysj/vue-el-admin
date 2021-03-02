@@ -1,4 +1,5 @@
 import $Util from '@/common/util.js'
+
 export default {
     state: {
         skus_type: 0,
@@ -13,27 +14,27 @@ export default {
         express: "", //运费模板
 
         oprice: 0, //市场价格
-        pprice:0,  //销售价格
-        cprice:0,  //成本价格
-        weight:0,  //体重
-        volume:0,  //体积
+        pprice: 0,  //销售价格
+        cprice: 0,  //成本价格
+        weight: 0,  //体重
+        volume: 0,  //体积
 
         //规格卡片
-        sku_card:[
+        sku_card: [
             {
-                name:'色调',
+                name: '色调',
                 type: 0, // 规格类型：0无 1颜色 2图片
                 //规格属性列表
-                list:[
+                list: [
                     {
-                        name:'蓝色',
-                        color:'',
-                        image:''
+                        name: '蓝色',
+                        color: '',
+                        image: ''
                     },
                     {
-                        name:'黄色',
-                        color:'',
-                        image:''
+                        name: '黄色',
+                        color: '',
+                        image: ''
                     }
                 ]
             }
@@ -48,42 +49,52 @@ export default {
         },
 
         // 修改规格卡片
-        vModelSkuCard(state, {key,index,value}){
+        vModelSkuCard(state, {key, index, value}) {
             state.sku_card[index][key] = value
         },
 
         //添加规格卡片
-        addSkuCard(state){
+        addSkuCard(state) {
             state.sku_card.push({
-                name:'规格名称',
+                name: '规格名称',
                 type: 0,
-                list:[]
+                list: []
             })
         },
 
         //删除规格卡片
-        delSkuCard(state,index) {
+        delSkuCard(state, index) {
             state.sku_card.splice(index, 1)
         },
 
         //规格卡片排序
-        sortSkuCard(state, {action, index}){
+        sortSkuCard(state, {action, index}) {
 
             $Util[action](state.sku_card, index)
         },
 
         //增加指定规格卡片的规格属性
-        addSkuValue(state, index){
+        addSkuValue(state, index) {
             state.sku_card[index].list.push({
-                name:'规格名称',
-                color:'',
-                image:''
+                name: '规格名称',
+                color: '',
+                image: ''
             })
         },
 
         //删除指定规格卡片的规格属性
-        delSkuValue(state, {cardIndex, valueIndex}){
-            state.sku_card[cardIndex].list.splice(valueIndex,1)
+        delSkuValue(state, {cardIndex, valueIndex}) {
+            state.sku_card[cardIndex].list.splice(valueIndex, 1)
+        },
+
+        //修改指定规格卡片的规格属性
+        updateSkuValue(state, {cardIndex, valueIndex, key, value}) {
+            state.sku_card[cardIndex].list[valueIndex][key] = value
+        },
+
+        //排序规格卡片的规格属性列表
+        sortSkuValue(state, {index, value}) {
+            state.sku_card[index].list = value
         }
     },
     actions: {}
