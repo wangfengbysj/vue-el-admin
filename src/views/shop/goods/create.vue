@@ -61,7 +61,7 @@
             </el-form-item>
 
             <el-form-item label="规格设置">
-              规格设置
+              <sku-table></sku-table>
             </el-form-item>
           </el-form>
         </template>
@@ -79,10 +79,11 @@ import {mapState, mapMutations} from 'vuex'
 import BaseCreate from "@/components/shop/create/base-create";
 import SingleAttr from "@/components/shop/create/single-attrs";
 import SkuCard from "@/components/shop/create/sku/sku-card";
+import SkuTable from "@/components/shop/create/sku-table";
 
 export default {
   name: "create",
-  components: {SkuCard, SingleAttr, BaseCreate},
+  components: {SkuTable, SkuCard, SingleAttr, BaseCreate},
   data() {
     return {
       tabIndex: 0,

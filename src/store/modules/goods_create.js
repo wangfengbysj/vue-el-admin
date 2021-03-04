@@ -38,10 +38,68 @@ export default {
                     }
                 ]
             }
+        ],
+
+        ths: [
+            {name: '商品规格', colspan: 1, rowspan: 1, width: ""},
+            {name: 'sku图片', rowspan: 2, width: "60"},
+            {name: '销售价', rowspan: 2, width: "100"},
+            {name: '市场价', rowspan: 2, width: "100"},
+            {name: '成本价', rowspan: 2, width: "100"},
+            {name: '库存', rowspan: 2, width: "100"},
+            {name: '体积', rowspan: 2, width: "100"},
+            {name: '重量', rowspan: 2, width: "100"},
+            {name: '编码', rowspan: 2, width: "100"},
         ]
 
+
     },
-    getters: {},
+    getters: {
+        skuLabels(state) {
+            return state.sku_card.filter(p => p.list.length > 0)
+        },
+
+        // 获取表头
+        tabelThs(state, getters) {
+            const length = getters.skuLabels.length
+            state.ths[0].colspan = length
+            state.ths[0].rowspan = length > 0 ? 1 : 2
+            return state.ths
+        },
+        // 获取规格表格数据
+        tableData(state) {
+            // 当前是否有规格卡片
+            if (state.sku_card.length === 0)
+                return []
+
+            let sku_list = []
+            for (let i =0; i < state.sku_card.length; i++){
+                if (state.sku_card[i].list.length > 0){
+                    sku_list.push(state.sku_card[i].list)
+                }
+            }
+
+            if (sku_list.length === 0){
+                return []
+            }
+            let arr = $Util.cartesianProductOf(...sku_list)
+            return arr.map(v => {
+                let obj = {
+                    skus:[],
+                    image:"", // sku图片
+                    pprice:0, // 销售价格
+                    oprice:0, // 市场价格
+                    cprice:0, // 成本价格
+                    stock:0,
+                    volume:0,
+                    weight:0,
+                    code:''
+                }
+                obj.skus = v
+                return obj
+            })
+        }
+    },
     mutations: {
         // 修改state
         vModelState(state, {key, value}) {
