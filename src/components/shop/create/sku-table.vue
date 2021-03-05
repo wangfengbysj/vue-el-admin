@@ -38,7 +38,6 @@
         <img v-else :src="item.image" class="rounded" style="width: 45px;height: 45px;cursor: pointer;" @click="chooseImage(item)"/>
       </td>
 
-
       <td class="text-center" width="100"><input class="form-control text-center" type="number" v-model="item.pprice"/>
       </td>
       <td class="text-center" width="100"><input class="form-control text-center" type="number" v-model="item.oprice"/>
