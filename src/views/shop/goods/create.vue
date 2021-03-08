@@ -8,13 +8,13 @@
     <el-tabs v-model="tabIndex" @tab-click="handleClick">
       <el-tab-pane label="基础设置">
         <base-create></base-create>
-<!--        <div style="width: 1000px">-->
-<!--          <div-->
-<!--              class="border p-3 h2"-->
-<!--              v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"-->
-<!--              :key="color.text"-->
-<!--          >{{color.text}}</div>-->
-<!--        </div>-->
+        <!--        <div style="width: 1000px">-->
+        <!--          <div-->
+        <!--              class="border p-3 h2"-->
+        <!--              v-for="color in colors" v-dragging="{ item: color, list: colors, group: 'color' }"-->
+        <!--              :key="color.text"-->
+        <!--          >{{color.text}}</div>-->
+        <!--        </div>-->
       </el-tab-pane>
 
       <el-tab-pane label="商品规格">
@@ -68,7 +68,9 @@
       </el-tab-pane>
       <el-tab-pane label="商品属性">商品属性</el-tab-pane>
       <el-tab-pane label="媒体设置">媒体设置</el-tab-pane>
-      <el-tab-pane label="商品详情">商品详情</el-tab-pane>
+      <el-tab-pane label="商品详情">
+        <tinymce ref="editor" v-model="msg" @onClick="onClick" />
+      </el-tab-pane>
       <el-tab-pane label="折扣设置">折扣设置</el-tab-pane>
     </el-tabs>
   </div>
@@ -80,10 +82,11 @@ import BaseCreate from "@/components/shop/create/base-create";
 import SingleAttr from "@/components/shop/create/single-attrs";
 import SkuCard from "@/components/shop/create/sku/sku-card";
 import SkuTable from "@/components/shop/create/sku-table";
+import Tinymce from "@/components/common/tinymce";
 
 export default {
   name: "create",
-  components: {SkuTable, SkuCard, SingleAttr, BaseCreate},
+  components: {Tinymce, SkuTable, SkuCard, SingleAttr, BaseCreate},
   data() {
     return {
       tabIndex: 0,
@@ -106,6 +109,7 @@ export default {
       // }, {
       //   text: "Burlywood"
       // }]
+      msg: 'Welcome to Use Tinymce Editor'
     }
   },
   computed: {
@@ -133,12 +137,17 @@ export default {
     // })
   },
   methods: {
-    ...mapMutations(['vModelState','addSkuCard']),
+    ...mapMutations(['vModelState', 'addSkuCard']),
     vModel(key, value) {
       this.vModelState({key, value})
     },
     handleClick(tab, event) {
       console.log('store.skus_type=', this.$store.state.goods_create.skus_type)
+    },
+    onClick(e, editor) {
+      console.log('Element clicked')
+      console.log(e)
+      console.log(editor)
     }
   }
 }
