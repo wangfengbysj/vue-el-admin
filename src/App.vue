@@ -2,15 +2,18 @@
   <div id="app">
     <router-view/>
     <image-dialog ref="imageDialog" :max="maxChooseImage"></image-dialog>
+    <sku-dialog ref="skusDialog"></sku-dialog>
   </div>
 </template>
 
 <script>
 
 import ImageDialog from "@/components/image/image-dialog";
+import SkuDialog from "@/components/skus/sku-dialog";
+
 export default {
   name: 'app',
-  components: {ImageDialog},
+  components: {SkuDialog, ImageDialog},
   // 依赖注入
   provide() {
     return {
@@ -19,13 +22,16 @@ export default {
   },
   data() {
     return {
-      maxChooseImage:9
+      maxChooseImage: 9
     };
   },
   methods: {
-    chooseImage(callback,max=9){
+    chooseImage(callback, max = 9) {
       this.maxChooseImage = max
       this.$refs.imageDialog.chooseImage(callback)
+    },
+    chooseSkus(callback) {
+      this.$refs.skusDialog.chooseSkus(callback)
     }
   }
 }

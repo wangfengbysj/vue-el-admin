@@ -4,7 +4,7 @@
       规格项：
       <el-input placeholder="请输入内容" :value="item.name"
                 @input="vModel('name', index, $event)" size="mini" style="width: 250px">
-        <el-button slot="append" icon="el-icon-more"></el-button>
+        <el-button slot="append" icon="el-icon-more" @click="chooseSkus"></el-button>
       </el-input>
 
       <el-radio-group size="medium" style="margin-bottom: -10px" class="ml-2"
@@ -28,12 +28,12 @@
       <div class="d-flex align-items-center flex-wrap">
 
         <sku-card-children :type="item.type"
-                           v-for="(item2,index2) in item.list"
+                           v-for="(item2,index2) in list"
                            :key="index2"
                            :item="item2"
                            :index="index2"
                            :cardIndex="index"
-                           v-dragging="{ item: item2, list: item.list, group: `skuItem${index}` }"></sku-card-children>
+                           v-dragging="{ item: item2, list: list, group: `skuItem${index}` }"></sku-card-children>
 
       </div>
       <!-- 增加规格属性 -->
@@ -50,6 +50,7 @@ import SkuCardChildren from "@/components/shop/create/sku/sku-card-children";
 
 export default {
   name: "sku-card",
+  inject: ['app'],
   components: {SkuCardChildren},
   data() {
     return {
@@ -62,8 +63,11 @@ export default {
     total: Number
   },
   mounted() {
+    this.$watch('item.list',(newValue, oldValue) => {
+      this.list = newValue
+    }),
     this.$dragging.$on('dragend', (e) => {
-      if (e.group === 'skuItem'+this.index){
+      if (e.group === 'skuItem' + this.index) {
         this.sortSkuValue({
           index: this.index,
           value: this.list
@@ -72,7 +76,7 @@ export default {
     })
   },
   methods: {
-    ...mapMutations(['vModelSkuCard', 'delSkuCard', 'sortSkuCard', 'addSkuValue','sortSkuValue']),
+    ...mapMutations(['vModelSkuCard', 'delSkuCard', 'sortSkuCard', 'addSkuValue', 'sortSkuValue']),
     vModel(key, index, value) {
       this.vModelSkuCard({key, index, value})
     },
@@ -80,6 +84,14 @@ export default {
     //排序规格卡片
     sortCard(action, index) {
       this.sortSkuCard({action, index})
+    },
+    chooseSkus() {
+      this.app.chooseSkus((res) => {
+        this.vModel('name', this.index, res.name)
+        this.vModel('type', this.index, res.type)
+        this.vModel('list', this.index, res.list)
+        this.list = res.list
+      })
     }
   }
 }

@@ -3,7 +3,7 @@
 
     <div class="mr-2">
       <!-- 颜色选择器 -->
-      <el-color-picker size="mini" v-if="type === 1"></el-color-picker>
+      <el-color-picker size="mini" v-if="type === 1" @change="onColorChange" :value="item.color"></el-color-picker>
       <template  v-else>
         <!-- 图片选择 -->
         <span v-if="!item.image" class="btn btn-light border" @click="chooseImage">
@@ -60,6 +60,9 @@ export default {
       this.app.chooseImage((res)=>{
         this.vModel('image',res[0].url)
       },1)
+    },
+    onColorChange(e){
+      this.vModel('color',e)
     }
   },
   data() {
