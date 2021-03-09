@@ -39,6 +39,7 @@
           <el-form ref="form" label-width="80px">
             <el-form-item label="添加规格">
 
+
               <sku-card v-for="(item,index) in sku_card"
                         :key="index"
                         :item="item"
@@ -52,16 +53,30 @@
 
           <el-form ref="form" label-width="80px">
             <el-form-item label="批量设置">
-              <el-button type="text" size="mini">销售价</el-button>
-              <el-button type="text" size="mini">市场价</el-button>
-              <el-button type="text" size="mini">成本价</el-button>
-              <el-button type="text" size="mini">库存</el-button>
-              <el-button type="text" size="mini">体积</el-button>
-              <el-button type="text" size="mini">重量</el-button>
+              <template v-if="!updateAllStatus">
+                <el-button type="text"
+                           size="mini"
+                           v-for="(btn,index) in updateList"
+                           :key="index"
+                           @click="openUpdateAllStatus(btn)">
+                  {{ btn.name }}
+                </el-button>
+              </template>
+
+              <div v-else class="d-flex align-items-center">
+                <el-input size="small"
+                          type="number"
+                          class="mr-2"
+                          style="width: 200px"
+                          v-model="updateAllValue"
+                          :placeholder="updateAllPlaceholder"></el-input>
+                <el-button type="primary" size="mini" @click="updateAllSubmit">设置</el-button>
+                <el-button size="mini" @click="closeUpdateAllStatus">取消</el-button>
+              </div>
             </el-form-item>
 
             <el-form-item label="规格设置">
-              <sku-table></sku-table>
+              <sku-table ref="table"></sku-table>
             </el-form-item>
           </el-form>
         </template>
@@ -69,7 +84,7 @@
       <el-tab-pane label="商品属性">商品属性</el-tab-pane>
       <el-tab-pane label="媒体设置">媒体设置</el-tab-pane>
       <el-tab-pane label="商品详情">
-        <tinymce ref="editor" v-model="msg" @onClick="onClick" />
+        <tinymce ref="editor" v-model="msg" @onClick="onClick"/>
       </el-tab-pane>
       <el-tab-pane label="折扣设置">折扣设置</el-tab-pane>
     </el-tabs>
@@ -90,6 +105,36 @@ export default {
   data() {
     return {
       tabIndex: 0,
+      // 批量修改
+      updateList: [
+        {
+          name: '销售价格',
+          key: 'pprice'
+        },
+        {
+          name: '市场价格',
+          key: 'oprice'
+        },
+        {
+          name: '成本价格',
+          key: 'cprice'
+        },
+        {
+          name: '库存',
+          key: 'stock'
+        },
+        {
+          name: '体积',
+          key: 'volume'
+        },
+        {
+          name: '重量',
+          key: 'weight'
+        },
+      ],
+      updateAllValue: "",
+      updateAllStatus: false,
+      updateAllPlaceholder: "",
       // colors: [{
       //   text: "Aquamarine"
       // }, {
@@ -141,13 +186,35 @@ export default {
     vModel(key, value) {
       this.vModelState({key, value})
     },
+
     handleClick(tab, event) {
       console.log('store.skus_type=', this.$store.state.goods_create.skus_type)
     },
+
     onClick(e, editor) {
       console.log('Element clicked')
       console.log(e)
       console.log(editor)
+    },
+
+    // 修改批量设置状态
+    openUpdateAllStatus(item) {
+      this.updateAllStatus = item.key
+      this.updateAllPlaceholder = item.name
+    },
+
+    // 提交批量设置
+    updateAllSubmit() {
+      this.$refs.table.list.forEach(item => {
+        item[this.updateAllStatus] = this.updateAllValue
+      })
+      this.closeUpdateAllStatus()
+    },
+
+    // 取消批量设置状态
+    closeUpdateAllStatus() {
+      this.updateAllValue = ""
+      this.updateAllStatus = false
     }
   }
 }
