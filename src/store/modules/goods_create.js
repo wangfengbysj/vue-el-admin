@@ -19,6 +19,9 @@ export default {
         weight: 0,  //体重
         volume: 0,  //体积
 
+        // 商品大图
+        banners:[],
+
         //规格卡片
         sku_card: [
             {

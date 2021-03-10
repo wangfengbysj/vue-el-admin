@@ -82,7 +82,40 @@
         </template>
       </el-tab-pane>
       <el-tab-pane label="商品属性">商品属性</el-tab-pane>
-      <el-tab-pane label="媒体设置">媒体设置</el-tab-pane>
+      <el-tab-pane label="媒体设置">
+        <el-form label-width="80px">
+          <el-form-item label="商品大图">
+
+            <div class="d-flex flex-wrap">
+
+              <div class="d-flex align-items-center justify-content-center border rounded position-relative mr-2 mb-2"
+                   style="width: 150px;height: 150px; cursor: pointer;"
+                   v-for="(item,index) in banners" :key="index"
+                   @click="chooseImage(index)">
+
+                <img v-if="item.url" :src="item.url" class="w-100 h-100"/>
+                <i v-else class="el-icon-plus text-muted" style="font-size: 30px"></i>
+
+                <i class="el-icon-delete p-2 text-white position-absolute"
+                   style="top:0;right:0;background-color:rgba(0,0,0,0.4)"
+                   @click.stop="deleteImage(index)"></i>
+
+              </div>
+
+
+              <div v-if="banners.length < 9"
+                   class="d-flex align-items-center justify-content-center border rounded position-relative mr-2 mb-2"
+                   style="width: 150px;height: 150px; cursor: pointer;"
+                   @click="chooseImage(-1)">
+
+                <i class="el-icon-plus text-muted" style="font-size: 30px"></i>
+              </div>
+
+            </div>
+
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
       <el-tab-pane label="商品详情">
         <tinymce ref="editor" v-model="msg" @onClick="onClick"/>
       </el-tab-pane>
@@ -101,6 +134,7 @@ import Tinymce from "@/components/common/tinymce";
 
 export default {
   name: "create",
+  inject: ['app'],
   components: {Tinymce, SkuTable, SkuCard, SingleAttr, BaseCreate},
   data() {
     return {
@@ -160,7 +194,8 @@ export default {
   computed: {
     ...mapState({
       skus_type: state => state.goods_create.skus_type,
-      sku_card: state => state.goods_create.sku_card
+      sku_card: state => state.goods_create.sku_card,
+      banners: state => state.goods_create.banners
     }),
 
     skuCardTotal() {
@@ -215,6 +250,35 @@ export default {
     closeUpdateAllStatus() {
       this.updateAllValue = ""
       this.updateAllStatus = false
+    },
+
+    // 选择图片
+    chooseImage(index) {
+      const MAX = 9
+      let count = MAX - this.banners.length
+      this.app.chooseImage((res) => {
+        let list = []
+        if (index === -1) {
+          list = [...this.banners, ...res]
+        } else {
+          list = [...this.banners]
+          list[index] = res[0]
+        }
+        this.vModel("banners", list)
+      }, index === -1 ? count : 1)
+    },
+
+    //删除图片
+    deleteImage(index) {
+      this.$confirm('是否要删除该图片?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let list = [...this.banners]
+        list.splice(index, 1)
+        this.vModel('banners', list)
+      })
     }
   }
 }
