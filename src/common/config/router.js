@@ -31,6 +31,10 @@ const routes = [
             {
                 meta: {title:'创建商品'},
                 component: 'shop/goods/create'
+            },
+            {
+                meta:{title: '分类管理'},
+                component: 'shop/category/list'
             }
         ]
     },

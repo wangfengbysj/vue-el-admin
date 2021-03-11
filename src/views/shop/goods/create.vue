@@ -81,7 +81,29 @@
           </el-form>
         </template>
       </el-tab-pane>
-      <el-tab-pane label="商品属性">商品属性</el-tab-pane>
+      <el-tab-pane label="商品属性">
+        <el-form label-width="80px" ref="form">
+          <el-form-item label="商品属性">
+            <el-select v-model="goods_type_id" @change="vModel('goods_type_id',$event)" placeholder="请选择" size="medium">
+              <el-option value="shanghai" label="区域一"/>
+              <el-option value="beijing" label="区域二"/>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <el-card class="goods_attrs box-card bg-light" body-style="background-color:white">
+          <div slot="header" class="clearfix" style="margin: 0">
+            <span>商品属性</span>
+          </div>
+          <el-form label-width="80px">
+            <el-form-item label="手机型号">
+              <el-input size="medium"
+                        :value="goods_attrs.phone_model"
+                        @input="vModelGoodsAttrs({key:'phone_model',value:$event})"
+                        placeholder="请输入手机型号"/>
+            </el-form-item>
+          </el-form>
+        </el-card>
+      </el-tab-pane>
       <el-tab-pane label="媒体设置">
         <el-form label-width="80px">
           <el-form-item label="商品大图">
@@ -119,7 +141,15 @@
       <el-tab-pane label="商品详情">
         <tinymce ref="editor" v-model="msg" @onClick="onClick"/>
       </el-tab-pane>
-      <el-tab-pane label="折扣设置">折扣设置</el-tab-pane>
+      <el-tab-pane label="折扣设置">
+        <el-form label-width="80px">
+          <el-form-item label="会员价">
+            <el-input :value="discount" @input="vModel('discount',$event)" style="width: 200px">
+              <template slot="append">%</template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -195,7 +225,10 @@ export default {
     ...mapState({
       skus_type: state => state.goods_create.skus_type,
       sku_card: state => state.goods_create.sku_card,
-      banners: state => state.goods_create.banners
+      banners: state => state.goods_create.banners,
+      goods_type_id: state => state.goods_create.goods_type_id,
+      goods_attrs: state => state.goods_create.goods_attrs,
+      discount: state => state.goods_create.discount
     }),
 
     skuCardTotal() {
@@ -217,7 +250,7 @@ export default {
     // })
   },
   methods: {
-    ...mapMutations(['vModelState', 'addSkuCard']),
+    ...mapMutations(['vModelState', 'addSkuCard','vModelGoodsAttrs']),
     vModel(key, value) {
       this.vModelState({key, value})
     },
@@ -287,5 +320,9 @@ export default {
 <style scoped>
 .goods_create .el-form-item {
   margin-bottom: 10px;
+}
+
+.goods_attrs >>> .el-card__header {
+  padding: 9px 10px;
 }
 </style>
