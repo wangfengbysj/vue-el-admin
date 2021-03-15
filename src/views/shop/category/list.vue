@@ -1,9 +1,15 @@
 <template>
-  <div class="custom-tree">
+  <div class="custom-tree px-3">
+    <div class="border-bottom d-flex align-items-center py-1 px-2"
+         style="margin: -32px;margin-top: -1rem;margin-bottom: 1rem!important;">
+      <el-button type="primary" size="mini" @click="createTop">创建顶级分类</el-button>
+    </div>
     <el-tree :data="data"
              :props="defaultProps"
              @node-click="handleNodeClick"
              default-expand-all
+             draggable
+             @node-drop="nodeDrop"
              :expand-on-click-node="false">
     <span class="custom-tree-node" slot-scope="{ node, data }">
         <div>
@@ -152,20 +158,44 @@ export default {
     },
 
     //增加
-    append(data){
+    append(data) {
       let obj = {
-        id:1,
+        id: 1,
         label: '二级 3-2',
         status: 1,
         editStatus: false,
         children: []
       }
-      if (!data.children){
+      if (!data.children) {
         data.children = []
       }
       data.children.push(obj)
+    },
+
+    //移动
+    nodeDrop(...options) {
+      console.log(options[0].data)
+      console.log(options[1].data)
+    },
+
+    //创建顶级分类
+    createTop() {
+      this.$prompt('请输入顶级分类名称', '提示', {
+        confirmButtonText: '创建',
+        cancelButtonText: '取消',
+        inputValidator:function(val){
+          if (val == '' || val == null ){
+            return '顶级分类名称不能为空'
+          } else{
+            return true
+          }
+        }
+      }).then(({ value }) => {
+        console.log(value)
+      })
     }
-  }
+  },
+
 }
 </script>
 
