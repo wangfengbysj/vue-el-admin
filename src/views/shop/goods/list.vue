@@ -7,10 +7,14 @@
         <button-search @search="searchEvent" ref="buttonSearch" placeholder="要搜索的商品名称">
 
           <template #left>
-            <router-link :to="{name:'shop_goods_create'}">
+            <router-link class="btn" :to="{name:'shop_goods_create'}">
               <el-button type="success">发布商品</el-button>
             </router-link>
+            <el-button type="warning">恢复商品</el-button>
             <el-button type="danger">批量删除</el-button>
+            <el-button>上架</el-button>
+            <el-button>下架</el-button>
+            <el-button>推荐</el-button>
           </template>
 
           <template #form>
