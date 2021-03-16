@@ -102,8 +102,9 @@ export default {
                 pathname: 'shop_category_list'
               },
               {
-                icon: 'el-icon-s-order',
-                name: '商品规则'
+                icon: 'el-icon-s-help',
+                name: '商品规格',
+                pathname: 'shop_sku_list'
               },
               {
                 icon: 'el-icon-s-order',
@@ -234,7 +235,7 @@ export default {
         })
       })
       if (arr.length > 0) {
-        arr.unshift({name: 'index', path: '/index', title: '首台首页'})
+        arr.unshift({name: 'index', path: '/index', title: '后台首页'})
       }
       this.bran = arr
 
