@@ -108,7 +108,8 @@ export default {
               },
               {
                 icon: 'el-icon-s-order',
-                name: '商品类型'
+                name: '商品类型',
+                pathname: 'shop_type_list'
               },
               {
                 icon: 'el-icon-s-comment',
