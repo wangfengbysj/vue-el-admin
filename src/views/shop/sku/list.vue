@@ -3,8 +3,8 @@
     <button-search class="pt-3" ref="buttonSearch" :show-search="false">
 
       <template #left>
-        <el-button size="mini" type="success" @click="openModel">添加规格</el-button>
-        <el-button size="mini" type="danger">批量删除</el-button>
+        <el-button size="mini" type="success" @click="openModel(false)">添加规格</el-button>
+        <el-button size="mini" type="danger" @click="deleteAll">批量删除</el-button>
       </template>
 
     </button-search>
@@ -32,7 +32,7 @@
       <el-table-column prop="id" align="center" label="操作" width="150">
         <template slot-scope="scope">
           <el-button-group>
-            <el-button type="primary" size="mini" plain>修改</el-button>
+            <el-button type="primary" size="mini" plain @click="openModel(scope)">修改</el-button>
             <el-button type="danger" size="mini" plain @click="deleteItem(scope)">删除</el-button>
           </el-button-group>
         </template>
@@ -56,7 +56,7 @@
         title="添加规格"
         :visible.sync="createModal"
         top="5vh">
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="skuForm" :model="form" :rules="rules" label-width="80px">
         <el-form-item label="规格名称" prop="name">
           <el-input v-model="form.name" placeholder="规格名称" style="width: 25%" size="mini"></el-input>
         </el-form-item>
@@ -107,10 +107,40 @@ export default {
     return {
       tableData: [
         {
-          name: '颜色',
-          value: '黄色,蓝色',
+          id: 1,
+          name: "颜色1",
+          value: "棕色,蓝色",
           order: 50,
-          status: 1
+          status: 1,
+          type: 0
+        }, {
+          id: 2,
+          name: "颜色2",
+          value: "棕色,蓝色",
+          order: 50,
+          status: 1,
+          type: 0
+        }, {
+          id: 3,
+          name: "颜色3",
+          value: "棕色,蓝色",
+          order: 50,
+          status: 1,
+          type: 0
+        }, {
+          id: 4,
+          name: "颜色4",
+          value: "棕色,蓝色",
+          order: 50,
+          status: 1,
+          type: 0
+        }, {
+          id: 5,
+          name: "颜色5",
+          value: "棕色,蓝色",
+          order: 50,
+          status: 1,
+          type: 0
         }
       ],
       form: {
@@ -120,6 +150,7 @@ export default {
         type: 0,
         status: 1
       },
+      editIndex: -1,
       multipleSelection: [],
       currentPage: 1,
       createModal: false,
@@ -156,26 +187,55 @@ export default {
     },
 
     //打开对话框
-    openModel() {
-      this.createModal = true
-      this.form = {
-        name: '',
-        value: '',
-        order: 50,
-        type: 0,
-        status: 1
+    openModel(e = false) {
+
+      if (!e) {
+        this.form = {
+          name: '',
+          value: '',
+          order: 50,
+          type: 0,
+          status: 1
+        }
+        this.editIndex = -1
+      } else {
+        let row = e.row
+        this.editIndex = e.$index
+        this.form = {
+          name: row.name,
+          value: row.value.replace(/,/g, '\n'),
+          order: row.order,
+          type: row.type,
+          status: row.status
+        }
       }
+      this.createModal = true
+      this.$refs.skuForm.resetFields();
     },
 
     // 添加规格
     submit() {
-      this.$refs.form.validate(res => {
+      this.$refs.skuForm.validate(res => {
         if (res) {
-          this.form.value = this.form.value.replace('\n', ',')
-          this.tableData.unshift(this.form)
+          let msg = '添加'
+          this.form.value = this.form.value.replace(/\n/g, ',')
+          if (this.editIndex === -1) {
+            this.tableData.unshift(this.form)
+
+          } else {
+            msg = '修改'
+            let item = this.tableData[this.editIndex]
+            console.log(item)
+            item.name = this.form.name
+            item.value = this.form.value
+            item.order = this.form.order
+            item.type = this.form.type
+            item.status = this.form.status
+            console.log(item)
+          }
           this.createModal = false
           this.$message({
-            message: '添加成功',
+            message: `${msg}成功`,
             type: 'success'
           });
         }
@@ -190,6 +250,29 @@ export default {
         type: 'warning'
       }).then(() => {
         this.tableData.splice(scope.$index, 1)
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+      })
+    },
+
+
+    //批量删除
+    deleteAll() {
+      console.log(this.multipleSelection)
+
+      this.$confirm('是否要删除选中规格?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.multipleSelection.forEach(item => {
+          let idx = this.tableData.findIndex(v => v.id === item.id)
+          if (idx != -1) {
+            this.tableData.splice(idx, 1)
+          }
+        })
         this.$message({
           message: '删除成功',
           type: 'success'
