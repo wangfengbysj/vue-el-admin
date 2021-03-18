@@ -221,13 +221,15 @@ export default {
               order: 50,
               name: '特性',
               type: 'input',
-              value: ""
+              value: "",
+              isedit:false
             },
             {
               order: 50,
               name: '前置摄象机',
               type: 'input',
-              value: ""
+              value: "",
+              isedit:false
             }
           ]
         }
@@ -241,8 +243,7 @@ export default {
         name: '',
         order: 50,
         status: 1,
-        sku_list: [],
-        value_list: []
+        sku_list: []
       },
 
       value_list: [{
@@ -295,22 +296,18 @@ export default {
       if (!e) {
         this.form = {
           name: "",
-          value: "",
-          status: 1,
           order: 50,
-          type: 0
+          status: 1,
+          sku_list: []
         }
+        this.value_list = []
         this.editIndex = -1
       } else {
-        let row = e.row
-        this.editIndex = e.$index
         this.form = {
-          name: row.name,
-          value: row.value.replace(/,/g, '\n'),
-          order: row.order,
-          type: row.type,
-          status: row.status
+          ...e.row
         }
+        this.value_list = [...e.row.value_list]
+        this.editIndex = e.$index
       }
       // 打开dialog
       this.createModal = true
@@ -318,32 +315,113 @@ export default {
     // 添加规格
     submit() {
       this.$refs.typeForm.validate(res => {
-        if (res) {
 
+        //验证属性列表
+        var result = true
+        var message = []
+        this.value_list.forEach((item, index) => {
+          let no = index + 1
+          if (item.order == '') {
+            result = result && false
+            message.push('第' + no + '行：排序不能为空')
+          }
+          if (item.name == '') {
+            result = result && false
+            message.push('第' + no + '行：属性名称不能为空')
+          }
+          if (item.type !== 'input' && item.value == '') {
+            result = result && false
+            message.push('第' + no + '行：属性值不能为空')
+          }
+        })
+        if (!result) {
+          var temp = ''
+          message.forEach(v => {
+            temp += `<li>${v}</li>`
+          })
+          return this.$notify({
+            title: '属性列表提示',
+            dangerouslyUseHTMLString: true,
+            type: 'warning',
+            duration: 3000,
+            message: `<ul>${temp}</ul>`
+          })
+        }
+
+        if (res) {
+          var msg = "添加"
+          if (this.editIndex === -1) {
+            this.tableData.unshift({
+              ...this.form,
+              value_list: [...this.value_list]
+            })
+          } else {
+            let item = this.tableData[this.editIndex]
+            item.name = this.form.name
+            item.sku_list = this.form.sku_list
+            item.status = this.form.status
+            item.type = this.form.type
+            item.order = this.form.order
+            item.value_list = this.value_list
+            msg = "修改"
+          }
+          // 关闭模态框
+          this.createModal = false
+          this.$message({
+            message: msg + '成功',
+            type: 'success'
+          });
         }
       })
     },
 
     //删除单个
     deleteItem(scope) {
-
+      this.$confirm('是否要删除该规格?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.tableData.splice(scope.$index, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      })
     },
 
 
     //批量删除
     deleteAll() {
+      this.$confirm('是否要删除选中规格?', '提示', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.multipleSelection.forEach(item => {
+          let index = this.tableData.findIndex(v => v.id === item.id)
+          if (index !== -1) {
+            this.tableData.splice(index, 1)
+          }
+        })
+        this.multipleSelection = []
 
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      })
     },
 
     //编辑属性
-    editRow(scope){
+    editRow(scope) {
       scope.row.isedit = !scope.row.isedit
     },
 
     //添加商品属性
     addValue() {
       this.value_list.push({
-        order: 0,
+        order: 1,
         name: '',
         type: "input",
         value: "",
