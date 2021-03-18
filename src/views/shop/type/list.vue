@@ -121,7 +121,7 @@
             <el-table-column
                 prop="order"
                 label="排序"
-                width="80">
+                width="60">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.order" size="mini"/>
               </template>
@@ -138,19 +138,21 @@
 
             <el-table-column
                 prop="type"
-                label="所属类型">
-             <template slot-scope="scope">
-               <el-select v-model="scope.row.type" placeholder="请选择所属类型" size="mini">
-                 <el-option value="input" label="输入值"></el-option>
-                 <el-option value="radio" label="单选值"></el-option>
-                 <el-option value="checkbox" label="多选值"></el-option>
-               </el-select>
-             </template>
+                label="所属类型"
+                width="130">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.type" placeholder="请选择所属类型" size="mini">
+                  <el-option value="input" label="输入值"></el-option>
+                  <el-option value="radio" label="单选值"></el-option>
+                  <el-option value="checkbox" label="多选值"></el-option>
+                </el-select>
+              </template>
             </el-table-column>
 
             <el-table-column
                 prop="status"
-                label="是否显示">
+                label="是否显示"
+                width="80">
               <template slot-scope="scope">
                 <el-switch v-model="scope.row.status" :active-value="1" :inactive-value="0"/>
               </template>
@@ -158,24 +160,30 @@
 
             <el-table-column
                 label="属性值">
-              <template slot-scope="scope" v-if="scope.row.type == 'input'">
+              <template slot-scope="scope" v-if="scope.row.type !== 'input'">
                 <el-input type="textarea" v-model="scope.row.value"
                           size="mini" placeholder="一行为一个属性值，多个属性值用换行输入" v-if="scope.row.isedit"></el-input>
-                <span v-else>{{scope.row.value}}</span>
+                <span v-else>{{ scope.row.value }}</span>
               </template>
             </el-table-column>
 
-            <el-table-column label="操作" width="180">
+            <el-table-column label="操作" width="130">
               <template slot-scope="scope">
-                <el-button v-if="scope.row.type !== 'input'" type="text" size="mini">{{scope.row.isedit?'完成':'编辑属性值'}}</el-button>
-                <el-button type="text" size="mini">删除</el-button>
+                <el-button
+                    v-if="scope.row.type !== 'input'"
+                    type="text"
+                    size="mini"
+                    @click="editRow(scope)">
+                  {{ scope.row.isedit ? '完成' : '编辑属性值' }}
+                </el-button>
+                <el-button type="text" size="mini" @click="deleteRow(scope.$index)">删除</el-button>
               </template>
             </el-table-column>
 
           </el-table>
         </el-form-item>
         <el-form-item>
-          <el-button type="text" size="mini" icon="el-icon-plus">添加一个属性</el-button>
+          <el-button type="text" size="mini" icon="el-icon-plus" @click="addValue">添加一个属性</el-button>
         </el-form-item>
       </el-form>
 
@@ -242,7 +250,7 @@ export default {
         name: '属性名称',
         type: "input",
         value: "属性值",
-        isedit: true
+        isedit: false
       }],
 
       rules: {
@@ -325,6 +333,27 @@ export default {
     //批量删除
     deleteAll() {
 
+    },
+
+    //编辑属性
+    editRow(scope){
+      scope.row.isedit = !scope.row.isedit
+    },
+
+    //添加商品属性
+    addValue() {
+      this.value_list.push({
+        order: 0,
+        name: '',
+        type: "input",
+        value: "",
+        isedit: false
+      })
+    },
+
+    //// 删除属性值
+    deleteRow(index) {
+      this.value_list.splice(index, 1)
     }
   }
 }
