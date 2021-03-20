@@ -113,7 +113,8 @@ export default {
               },
               {
                 icon: 'el-icon-s-comment',
-                name: '商品评论'
+                name: '商品评论',
+                pathname: 'shop_comment_list'
               }
             ]
           },

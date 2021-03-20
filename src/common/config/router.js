@@ -43,6 +43,10 @@ const routes = [
             {
                 meta:{title:'商品类型管理'},
                 component: 'shop/type/list'
+            },
+            {
+                meta:{title:'商品评论'},
+                component: 'shop/comment/list'
             }
         ]
     },
