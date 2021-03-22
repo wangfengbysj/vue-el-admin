@@ -5,9 +5,11 @@
       <slot name="left"></slot>
       <!--右边-->
       <div class="ml-auto" v-show="!superSearch" v-if="showSearch">
-        <el-input v-model="keyword" :placeholder="placeholder" style="width: 150px" class="mr-2"></el-input>
-        <el-button type="info" @click="$emit('search',keyword)">搜索</el-button>
-        <el-button @click="superSearch=true">高级搜索</el-button>
+        <slot name="right">
+          <el-input v-model="keyword" :placeholder="placeholder" style="width: 150px" class="mr-2"></el-input>
+          <el-button type="info" @click="$emit('search',keyword)">搜索</el-button>
+          <el-button @click="superSearch=true">高级搜索</el-button>
+        </slot>
       </div>
 
     </div>
@@ -31,9 +33,9 @@ export default {
       type: String,
       default: ''
     },
-    showSearch:{
-      type:Boolean,
-      default:true
+    showSearch: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -42,8 +44,8 @@ export default {
       superSearch: false
     }
   },
-  methods:{
-    closeSuperSearch(){
+  methods: {
+    closeSuperSearch() {
       this.superSearch = false
     }
   }

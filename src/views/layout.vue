@@ -123,16 +123,18 @@ export default {
             name: '订单',
             submenu: [
               {
-                icon: 'el-icon-s-order',
-                name: '订单列表'
-              },
-              {
-                icon: 'el-icon-s-custom',
-                name: '发票管理'
+                icon: 'el-icon-s-claim',
+                name: '发票管理',
+                pathname: 'order_invoice_list'
               },
               {
                 icon: 'el-icon-s-opportunity',
-                name: '售后服务'
+                name: '售后服务',
+                pathname: 'order_after-sale_list'
+              },
+              {
+                icon: 'el-icon-s-order',
+                name: '订单列表'
               }
             ]
           },
