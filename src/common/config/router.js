@@ -55,6 +55,10 @@ const routes = [
             {
                 meta:{title:'售后服务'},
                 component: 'order/after-sale/list'
+            },
+            {
+                meta:{title:'订单管理'},
+                component: 'order/order/list'
             }
         ]
     },
