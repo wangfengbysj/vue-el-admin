@@ -1,6 +1,6 @@
 <template>
   <div class="bg-white px-3" style="margin:-20px;margin-top:-1rem;margin-bottom: 1rem">
-    <button-search class="pt-3" ref="buttonSearch" placeholder="要搜索的商品名称">
+    <button-search class="pt-3" placeholder="要搜索的商品名称">
 
       <template #left>
         <el-button type="success" size="mini" @click="openModel(false)">添加会员</el-button>
