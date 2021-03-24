@@ -145,7 +145,8 @@ export default {
             submenu: [
               {
                 icon: 'el-icon-user',
-                name: '会员列表'
+                name: '会员列表',
+                pathname: 'user_user-list_list'
               },
               {
                 icon: 'el-icon-s-data',
