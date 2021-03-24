@@ -150,7 +150,8 @@ export default {
               },
               {
                 icon: 'el-icon-s-data',
-                name: '会员等级'
+                name: '会员等级',
+                pathname: 'user_user-level_list'
               }
             ]
           },

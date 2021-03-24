@@ -100,7 +100,7 @@
         </el-form-item>
 
         <el-form-item label="密码">
-          <el-input show-password v-model="form.password" :min="0" style="width: 25%" placeholder="密码" size="mini"/>
+          <el-input show-password v-model="form.password" style="width: 25%" placeholder="密码" size="mini"/>
         </el-form-item>
 
         <el-form-item label="昵称" prop="nickname">
@@ -118,7 +118,7 @@
         </el-form-item>
 
         <el-form-item label="会员等级">
-          <el-select placeholder="请选择会员等级" v-model="form.level_id">
+          <el-select placeholder="请选择会员等级" v-model="form.level_id" size="mini">
             <el-option label="普通会员" :value="1"></el-option>
             <el-option label="黄金会员" :value="2"></el-option>
           </el-select>
