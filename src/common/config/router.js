@@ -79,6 +79,10 @@ const routes = [
             {
                 meta:{title:'管理员管理'},
                 component: 'set/manager/index'
+            },
+            {
+                meta: {title:'交易设置'},
+                component: 'set/payment/index'
             }
         ]
     },

@@ -176,7 +176,8 @@ export default {
               },
               {
                 icon: 'el-icon-s-finance',
-                name: '交易设置'
+                name: '交易设置',
+                pathname: 'set_payment'
               }
             ]
           }
