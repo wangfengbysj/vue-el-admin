@@ -67,6 +67,18 @@ const routes = [
             {
                 meta: {title: '会员等级'},
                 component: 'user/user-level/list'
+            },
+            {
+                meta: {title: '基础设置'},
+                component: 'set/base/index'
+            },
+            {
+                meta:{title:'物流设置'},
+                component: 'set/express/index'
+            },
+            {
+                meta:{title:'管理员管理'},
+                component: 'set/manager/index'
             }
         ]
     },
