@@ -9,11 +9,20 @@ Vue3.0 商城后台管理系统
 
 ### 前台页面管理系统
 - git 标签：`vue_el_v1.0 `
-- git 分支：`vue_el_v1.0 `
+- git 分支：`vue_el_ui `
 
 ### 启动命令
 
 - ```npm run serve```
+
+### 环境准备
+- 安装vue-cli-plugin-element
+
+	```
+	vue create my-app
+	cd my-app
+	vue add element
+	```
 
 
 
