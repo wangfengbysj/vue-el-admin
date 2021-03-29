@@ -1,24 +1,19 @@
-# vue-el-admin
+<h1 align=center>
+Vue3.0 商城后台管理系统
+</h1>
 
-## Project setup
-```
-npm install
-```
+<p align=center>
+<img src="https://img.shields.io/badge/Lisence-MIT-brightgreen"/><br/>
+</p>
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 前台页面管理系统
+- git 标签：`vue_el_v1.0 `
+- git 分支：`vue_el_v1.0 `
 
-### Lints and fixes files
-```
-npm run lint
-```
+### 启动命令
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- ```npm run serve```
+
+
+
