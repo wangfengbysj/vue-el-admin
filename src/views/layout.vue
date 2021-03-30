@@ -17,8 +17,8 @@
           <el-submenu index="100">
             <template slot="title">
               <el-avatar size="small"
-                         src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"></el-avatar>
-              summer
+                         :src="user.avatar? user.avatar:'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'"></el-avatar>
+              {{ user.username }}
             </template>
             <el-menu-item index="100-1">修改</el-menu-item>
             <el-menu-item index="100-2">退出</el-menu-item>
@@ -63,6 +63,7 @@
 </template>
 <script>
 import common from '../common/mixins/common'
+import {mapState} from 'vuex'
 
 export default {
   mixins: [common],
@@ -123,9 +124,9 @@ export default {
             name: '订单',
             submenu: [
               {
-              icon: 'el-icon-s-order',
-              name: '订单管理',
-              pathname: 'order_order_list'
+                icon: 'el-icon-s-order',
+                name: '订单管理',
+                pathname: 'order_order_list'
               },
               {
                 icon: 'el-icon-s-claim',
@@ -197,6 +198,10 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      user: state => state.user.user
+    }),
+
     slideMenuActive: {
       get() {
         return this.navBar.list[this.navBar.active].subActive || '0'
@@ -214,6 +219,14 @@ export default {
   methods: {
     handleSelect(key, path) {
       console.log('key=', key)
+      if (key === '100-1') {
+        return console.log('修改资料')
+      }
+      if (key === '100-2') {
+        //登录推出
+        return this.logout()
+      }
+
       this.navBar.active = key
       // 默认选中跳转到当前激活
       this.slideMenuActive = '0'
@@ -250,6 +263,27 @@ export default {
       }
       this.bran = arr
 
+    },
+    logout() {
+      this.axios.post('/admin/logout', {}, {
+        headers: {'token': this.user.token},
+      }).then(res => {
+
+        this.$message('退出成功')
+        // 清除状态和存储
+        this.$store.commit('logout')
+        // 返回到登录页
+        this.$router.push({name: 'login'})
+
+      }).catch(err => {
+        if (err.response.data && err.response.data.errorCode) {
+          this.$message.error(err.response.data.msg)
+          // 清除状态和存储
+          this.$store.commit('logout')
+          // 返回到登录页
+          this.$router.push({name: "login"})
+        }
+      })
     }
   }
 }
