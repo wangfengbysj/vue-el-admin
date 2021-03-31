@@ -266,7 +266,8 @@ export default {
     },
     logout() {
       this.axios.post('/admin/logout', {}, {
-        headers: {'token': this.user.token},
+        token:true,
+        loading:true
       }).then(res => {
 
         this.$message('退出成功')
@@ -276,13 +277,10 @@ export default {
         this.$router.push({name: 'login'})
 
       }).catch(err => {
-        if (err.response.data && err.response.data.errorCode) {
-          this.$message.error(err.response.data.msg)
-          // 清除状态和存储
-          this.$store.commit('logout')
-          // 返回到登录页
-          this.$router.push({name: "login"})
-        }
+        // 清除状态和存储
+        this.$store.commit('logout')
+        // 返回到登录页
+        this.$router.push({name: "login"})
       })
     }
   }

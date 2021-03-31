@@ -18,7 +18,12 @@
                             autocomplete="off"></el-input>
                 </el-form-item>
                 <el-form-item>
-                  <el-button type="primary" class="w-100" size="medium" @click="submitForm()">立即登录</el-button>
+                  <el-button type="primary"
+                             class="w-100"
+                             size="medium"
+                             @click="submitForm()"
+                             :loading="loading">{{ loading ? '登录中' : '立即登录' }}
+                  </el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -34,6 +39,7 @@ export default {
   name: "index",
   data() {
     return {
+      loading: false,
       ruleForm: {
         username: '',
         password: ''
@@ -53,6 +59,7 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
           // 提交表单
+          this.loading = true
           this.axios.post('/admin/login', this.ruleForm).then(res => {
             console.log("res", res)
             // 存储到vuex
@@ -61,15 +68,15 @@ export default {
 
             // 成功提示
             this.$message('登录成功')
+            this.loading = false
 
             // 跳转后台首页
             this.$router.push({name: "index"})
 
           }).catch(err => {
+            this.loading = false
             console.log("err", err)
-            if (err.response.data && err.response.data.errorCode) {
-              this.$message.error(err.response.data.msg)
-            }
+
           })
         }
       })
