@@ -5,13 +5,13 @@
       <el-header class="d-flex align-items-center border-bottom">
         <!-- 头部 -->
         <div class="mr-auto d-flex">
-          <el-select size="medium" v-model="searchForm.order" placeholder="请选择活动区域" style="width: 150px" class="mr-2">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+          <el-select size="medium" v-model="searchForm.order" placeholder="请选择图片排序方式" style="width: 150px" class="mr-2">
+            <el-option label="降序" value="desc"></el-option>
+            <el-option label="升序" value="asc"></el-option>
           </el-select>
           <el-input placeholder="输入相册名字" v-model="searchForm.keyword" size="medium" style="width: 150px"
                     class="mr-2"></el-input>
-          <el-button type="success" size="medium">搜索</el-button>
+          <el-button type="success" size="medium" @click="getImageList">搜索</el-button>
         </div>
         <el-button type="warning" size="medium" @click="unChoose()" v-if="chooseList.length">取消删除</el-button>
         <el-button type="danger" size="medium" @click="imageDel({all:true})" v-if="chooseList.length">批量删除</el-button>
@@ -20,7 +20,7 @@
       </el-header>
 
       <el-container>
-        <el-aside width="200px" style="position: absolute;top: 60px;left: 0;bottom: 60px;">
+        <el-aside width="200px" style="position: absolute;top: 60px;left: 0;bottom: 60px;" class="bg-white border-right">
           <!-- 侧边 -->
           <ul class="list-group list-group-flush">
             <li class="list-group-item list-group-item-action d-flex align-items-center"
@@ -30,7 +30,7 @@
               {{ item.name }}
               <el-dropdown class="ml-auto">
                 <span class="btn btn-light btn-sm border">
-                  {{ item.num }}
+                  {{ item.images_count }}
                  <i class="el-icon-arrow-down el-icon--right"></i>
                 </span>
                 <el-dropdown-menu slot="dropdown">
@@ -83,7 +83,7 @@
         <div style="width: 200px;flex-shrink: 0"
              class="h-100 d-flex align-items-center border-right  justify-content-center">
           <el-button-group>
-            <el-button size="mini" icon="el-icon-arrow-left">上一页</el-button>
+            <el-button size="mini" :disabled="albumPage === 1" icon="el-icon-arrow-left">上一页</el-button>
             <el-button size="mini">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
           </el-button-group>
         </div>
@@ -92,10 +92,10 @@
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
               :current-page="currentPage"
-              :page-sizes="[100, 200, 300, 400]"
-              :page-size="100"
+              :page-sizes="pageSizes"
+              :page-size="pageSize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="400">
+              :total="total">
           </el-pagination>
         </div>
       </el-footer>
@@ -137,7 +137,7 @@ export default {
   data() {
     return {
       searchForm: {
-        order: "",
+        order: "desc",
         keyword: ""
       },
       albumForm: {
@@ -148,10 +148,18 @@ export default {
       albumEditIndex: -1,
       albumModel: false,
       albumIndex: 0,
+
       albums: [],
+      albumPage: 1,
+      albumTotal: 0,
+
       imageList: [],
       chooseList: [],
-      currentPage: 1
+      currentPage: 1,
+
+      pageSize: 10,
+      pageSizes: [10, 20, 50, 100],
+      total: 100,
     }
   },
   created() {
@@ -160,28 +168,71 @@ export default {
   computed: {
     albumTitle() {
       return this.albumEditIndex > -1 ? "编辑相册" : "新建相册"
+    },
+    image_class_id() {
+      let current = this.albums[this.albumIndex]
+      return current ? current.id : 0
+    },
+    imageListUrl() {
+      let id = this.image_class_id
+      let other = ""
+      if (this.searchForm.keyword != '') {
+        other = `&keyword=${this.searchForm.keyword}`
+      }
+      return `/admin/imageclass/${id}/image/${this.currentPage}?limit=${this.pageSize}&order=${this.searchForm.order}${other}`
     }
   },
   methods: {
 
-    __init() {
-      for (var i = 0; i < 20; i++) {
-        this.albums.push({
-          name: "相册" + i,
-          num: Math.floor(Math.random() * 100),
-          order: 0
+    getImageList() {
+      this.axios.get(this.imageListUrl, {
+        token: true
+      }).then(res => {
+        let result = res.data.data
+        this.imageList = result.list.map(item => {
+          return {
+            id: item.id,
+            url: item.url,
+            name: item.name,
+            isCheck: false,
+            checkOrder: 0
+          }
         })
-      }
+        this.total = result.totalCount
+      })
+    },
 
-      for (var i = 0; i < 30; i++) {
-        this.imageList.push({
-          id: i,
-          url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
-          name: "图片" + i,
-          isCheck: false,
-          checkOrder: 0
-        })
-      }
+    __init() {
+      // for (var i = 0; i < 20; i++) {
+      //   this.albums.push({
+      //     name: "相册" + i,
+      //     num: Math.floor(Math.random() * 100),
+      //     order: 0
+      //   })
+      // }
+      //
+      // for (var i = 0; i < 30; i++) {
+      //   this.imageList.push({
+      //     id: i,
+      //     url: "https://tangzhe123-com.oss-cn-shenzhen.aliyuncs.com/Appstatic/qsbk/demo/datapic/40.jpg",
+      //     name: "图片" + i,
+      //     isCheck: false,
+      //     checkOrder: 0
+      //   })
+      // }
+
+      //获取相册列表
+      this.axios.get('/admin/imageclass/' + this.albumPage, {
+        token: true
+      }).then(res => {
+        let result = res.data.data
+        console.log(result)
+        this.albums = result.list
+
+        // 获取选中相册下的第一页图片列表
+        this.getImageList()
+
+      })
     },
 
     // 点击确定修改/创建相册
@@ -245,6 +296,10 @@ export default {
     // 切换相册
     albumChange(index) {
       this.albumIndex = index
+      this.albumPage = 1
+      this.currentPage = 1
+      this.getImageList()
+
     },
 
     //预览图片
@@ -341,9 +396,14 @@ export default {
 
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      this.pageSize = val
+      this.currentPage = 1
+      this.getImageList()
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage = val
+      this.getImageList()
     }
   }
 }
